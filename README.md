@@ -12,7 +12,7 @@
 -  Profile management with skills, education, and project history
 - Dark mode support
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 - **Frontend:** Next.js + Tailwind CSS
 - **Backend & Realtime DB:** Firebase Firestore
