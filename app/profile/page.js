@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -7,13 +6,13 @@ import { db } from "../../config/firebase";
 import { doc, getDoc } from "firebase/firestore";
 
 export default function ProfileView() {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const router = useRouter();
   const [profile, setProfile] = useState(null);
 
   useEffect(() => {
     if (!session) {
-      router.push("/"); // Redirect if not logged in
+      router.push("/");
     } else {
       fetchProfile();
     }
@@ -28,34 +27,76 @@ export default function ProfileView() {
       setProfile({
         name: session.user.name,
         email: session.user.email,
-        bio: "No bio yet",
-        skills: "No skills added",
       });
     }
   };
 
-  if (!profile) return <p className="text-center mt-10">Loading...</p>;
+  if (!profile)
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gray-100 dark:bg-gray-900">
+        <p className="text-lg font-semibold text-gray-800 dark:text-gray-200">Loading...</p>
+      </div>
+    );
 
   return (
-    <div className="flex flex-col items-center min-h-screen bg-gray-100 dark:bg-gray-900 p-6">
-      <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg w-full max-w-lg text-center">
-        <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Profile</h2>
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-6 flex flex-col items-center justify-start">
+      <div className="w-full max-w-4xl flex flex-col items-center">
+        
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg flex flex-col items-center w-full max-w-lg mb-6">
+          <div className="mb-4">
+            
+              <div className="w-28 h-28 rounded-full bg-[#b28f1c] flex items-center justify-center text-4xl font-medium text-white">
+                {profile.name[0]}
+              </div>
+          </div>
 
-        {session?.user?.image && (
-          <img src={session.user.image} alt="Profile" className="w-24 h-24 rounded-full mx-auto mb-4" />
-        )}
+          <h3 className="text-2xl font-bold text-gray-800 dark:text-white">
+            {profile.name}
+          </h3>
+          <button
+            onClick={() => router.push("/profile/edit")}
+            className="mt-4 bg-[#8e6a1a] cursor-pointer text-white py-2 px-6 rounded-full transition-all ease-in-out duration-200"
+          >
+            Edit Profile
+          </button>
+        </div>
 
-        <p className="text-lg font-semibold">{profile.name}</p>
-        <p className="text-gray-500">{profile.email}</p>
-        <p className="mt-4">{profile.bio}</p>
-        <p className="text-sm text-gray-500">Skills: {profile.skills}</p>
+        
+        <div className="flex flex-col items-end w-full max-w-lg space-y-6">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg w-full">
+            <h4 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">
+              Designation
+            </h4>
+            <p className="text-gray-600 dark:text-gray-300">{profile.designation}</p>
 
-        <button
-          onClick={() => router.push("/profile/edit")}
-          className="mt-4 bg-blue-600 text-white py-2 px-6 rounded-lg hover:bg-blue-700"
-        >
-          Edit Profile
-        </button>
+          </div>
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg w-full">
+            <h4 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">
+              Contact Information
+            </h4>
+            <p className="text-gray-600 dark:text-gray-300">{profile.email}</p>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg w-full">
+            <h4 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">
+              Tech Skills
+            </h4>
+            <p className="text-gray-600 dark:text-gray-300">{profile.skills}</p>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg w-full">
+            <h4 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">
+              Past Projects
+            </h4>
+            <p className="text-gray-600 dark:text-gray-300">{profile.projects}</p>
+          </div>
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg w-full">
+            <h4 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">
+              Education
+            </h4>
+            <p className="text-gray-600 dark:text-gray-300">{profile.education}</p>
+          </div>
+        </div>
       </div>
     </div>
   );
